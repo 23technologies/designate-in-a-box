@@ -1,0 +1,30 @@
+---
+- name: Prepare dummy network interface
+  hosts: designate-in-a-box.23technologies.xyz
+  gather_facts: false
+
+  tasks:
+    - name: Load dummy kernel module
+      become: true
+      command: modprobe dummy
+
+    - name: Create dummy0 dummy interface
+      become: true
+      command: ip link add dummy0 type dummy
+
+    - name: Assign ip adress to the dummy0 interface
+      become: true
+      command: ip addr add 192.168.16.10/20 dev dummy0
+
+    - name: Set dummy interface to up
+      become: true
+      command: ip link set up dev dummy0
+
+    - name: Copy netplan configuration
+      become: true
+      copy:
+        src: 99-dummy.yaml
+        dest: /etc/netplan
+        owner: root
+        group: root
+        mode: 0644

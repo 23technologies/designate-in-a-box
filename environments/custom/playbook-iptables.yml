@@ -1,0 +1,27 @@
+---
+- name: Set iptables rules
+  hosts: designate-in-a-box.23technologies.xyz
+  gather_facts: false
+
+  tasks:
+    - name: Install iptables-persistent package
+      become: true
+      package:
+        name: iptables-persistent
+        state: present
+
+    - name: Set iptables rules
+      become: true
+      command: "{{ item }}"
+      loop:
+        - "iptables -t nat -A PREROUTING -i {{ ansible_local.network_devices.management }} -p tcp --dport 53 -j DNAT --to-destination {{ kolla_internal_vip_address }}:53"
+        - "iptables -t nat -A PREROUTING -i {{ ansible_local.network_devices.management }} -p udp --dport 53 -j DNAT --to-destination {{ kolla_internal_vip_address }}:53"
+        - "iptables -t nat -A PREROUTING -i {{ ansible_local.network_devices.management }} -p tcp --dport 80 -j DNAT --to-destination {{ kolla_internal_vip_address }}:80"
+        - "iptables -t nat -A PREROUTING -i {{ ansible_local.network_devices.management }} -p tcp --dport 443 -j DNAT --to-destination {{ kolla_internal_vip_address }}:443"
+        - "iptables -t nat -A PREROUTING -i {{ ansible_local.network_devices.management }} -p tcp --dport 5000 -j DNAT --to-destination {{ kolla_internal_vip_address }}:5000"
+        - "iptables -t nat -A PREROUTING -i {{ ansible_local.network_devices.management }} -p tcp --dport 9001 -j DNAT --to-destination {{ kolla_internal_vip_address }}:9001"
+        - "iptables -t nat -A PREROUTING -i {{ ansible_local.network_devices.management }} -p tcp --dport 35357 -j DNAT --to-destination {{ kolla_internal_vip_address }}:35357"
+
+    - name: Persist iptables rules
+      become: true
+      shell: iptables-save > /etc/iptables/rules.v4 && chmod 0644 /etc/iptables/rules.v4

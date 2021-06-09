@@ -1,0 +1,33 @@
+---
+- name: Get letsencrypt certificate
+  hosts: designate-in-a-box.23technologies.xyz
+  gather_facts: false
+  become: true
+
+  vars:
+    certbot_auto_renew: false
+    certbot_create_if_missing: true
+    certbot_create_method: standalone
+    certbot_admin_email: acme@designate-in-a-box.23technologies.xyz
+    certbot_create_standalone_stop_services: []
+
+  roles:
+    - geerlingguy.certbot
+
+- name: Copy letsencrypt certificate
+  hosts: designate-in-a-box.23technologies.xyz
+  gather_facts: false
+
+  tasks:
+    - name: Prepare haproxy.pem certificate
+      become: true
+      shell: |
+        cat /etc/letsencrypt/live/{{ kolla_internal_fqdn }}/privkey.pem \
+            /etc/letsencrypt/live/{{ kolla_internal_fqdn }}/fullchain.pem \
+            > /opt/configuration/environments/kolla/files/certificates/haproxy.pem
+
+    - name: Copy haproxy.pem to haproxy-internal.pem
+      become: true
+      command: |
+        cp /opt/configuration/environments/kolla/files/certificates/haproxy.pem \
+           /opt/configuration/environments/kolla/files/certificates/haproxy-internal.pem

@@ -1,0 +1,10 @@
+---
+clouds:
+  admin:
+    auth:
+      username: admin
+      project_name: admin
+      auth_url: https://api.designate-in-a-box.23technologies.xyz:5000/v3
+      project_domain_name: default
+      user_domain_name: default
+    identity_api_version: 3

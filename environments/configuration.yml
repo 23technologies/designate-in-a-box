@@ -1,0 +1,72 @@
+---
+##########################
+# configuration
+
+configuration_directory: /opt/configuration
+
+configuration_type: git
+configuration_git_version: main
+configuration_git_host: github.com
+configuration_git_port: 443
+configuration_git_repository: 23technologies/designate-in-a-box.git
+configuration_git_protocol: https
+
+##########################
+# docker
+
+docker_user: "{{ operator_user }}"
+
+docker_registry: index.docker.io
+docker_registry_ansible: quay.io
+docker_registry_service: index.docker.io
+
+##########################
+# docker_compose
+
+docker_compose_install_type: package
+
+##########################
+# versions
+
+docker_version: "5:20.10.6"
+repository_version: latest
+
+##########################
+# operator
+
+operator_user: dragon
+operator_group: dragon
+operator_authorized_keys:
+  - "{{lookup('file', '/ansible/secrets/id_rsa.operator.pub')}}"
+
+##########################
+# resolvconf
+
+resolvconf_nameserver:
+  - 1.1.1.1
+  - 8.8.8.8
+  - 9.9.9.9
+resolvconf_search: designate-in-a-box.23technologies.xyz
+
+##########################
+# hosts
+
+hosts_type: template
+
+##########################
+# common
+
+cleanup_services_extra:
+  - NetworkManager
+  - iscsid
+  - lxcfs
+  - nscd
+  - ntp
+  - networkd-dispatcher
+  - systemd-networkd
+
+##########################
+# kolla
+
+kolla_internal_fqdn: api.designate-in-a-box.23technologies.xyz
+kolla_internal_vip_address: 192.168.16.9

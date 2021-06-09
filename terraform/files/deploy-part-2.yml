@@ -1,0 +1,63 @@
+---
+- name: Copy custom facts
+  hosts: designate-in-a-box.23technologies.xyz
+  connection: local
+  gather_facts: false
+
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+
+  tasks:
+    - name: Create custom facts directory
+      become: true
+      file:
+        path: /etc/ansible/facts.d
+        state: "directory"
+        owner: root
+        group: root
+        mode: 0755
+
+    - name: Copy fact files
+      become: true
+      copy:
+        src: "/opt/configuration/environments/custom/files/{{ item }}.fact"
+        dest: "/etc/ansible/facts.d/{{ item }}.fact"
+        owner: root
+        group: root
+        mode: 0755
+      loop:
+        - network_devices
+
+- name: Set random secrets
+  hosts: designate-in-a-box.23technologies.xyz
+  connection: local
+  gather_facts: false
+
+  tasks:
+    - name: Install required packages
+      become: true
+      apt:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - python3-oslo.utils
+        - python3-passlib
+        - python3-ruamel.yaml
+
+    - name: Copy required scripts
+      become: true
+      copy:
+        src: "/opt/configuration/environments/custom/files/{{ item }}"
+        dest: "/usr/local/bin/{{ item }}"
+        owner: root
+        group: root
+        mode: 0755
+      loop:
+        - generate-secrets.py
+        - set-secrets.py
+
+    - name: Generate random secrets
+      command: generate-secrets.py -p /opt/configuration/environments/kolla/secrets.yml
+
+    - name: Set new secrets
+      command: set-secrets.py

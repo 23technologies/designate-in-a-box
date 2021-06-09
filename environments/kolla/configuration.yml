@@ -1,0 +1,39 @@
+---
+##########################################################
+# images
+
+docker_registry: quay.io
+openstack_release: victoria
+kolla_image_version: "{{ openstack_release }}"
+
+##########################################################
+# haproxy
+
+kolla_certificates_dir: "/opt/configuration/environments/kolla/files/certificates"
+
+kolla_enable_tls_internal: "yes"
+kolla_enable_tls_external: "yes"
+
+##########################################################
+# openstack
+
+# enable services
+
+enable_designate: "yes"
+
+# disable services
+
+enable_cinder: "no"
+enable_elasticsearch: "no"
+enable_fluentd: "no"
+enable_glance: "no"
+enable_heat: "no"
+enable_kibana: "no"
+enable_neutron: "no"
+enable_nova: "no"
+enable_openvswitch: "no"
+enable_placement: "no"
+enable_prometheus: "no"
+
+# designate
+desginate_ns_record: gardener.23technologies.xyz

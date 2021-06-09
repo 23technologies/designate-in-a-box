@@ -1,0 +1,17 @@
+---
+##########################
+# versions
+
+manager_version: latest
+openstack_version: victoria
+
+##########################
+# manager
+
+ara_server_database_type: sqlite3
+
+ara_enable: true
+ara_server_host: "{{ hostvars[inventory_hostname]['ansible_' + console_interface]['ipv4']['address'] }}"
+
+awx_enable: false
+ceph_ansible_enable: false

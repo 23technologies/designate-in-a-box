@@ -1,0 +1,40 @@
+---
+node_id: 5
+
+##########################################################
+# ansible
+
+ansible_host: "{{ '192.168.16.0/20' | ipaddr('net') | ipaddr(5) | ipaddr('address') }}"
+ansible_python_interpreter: /usr/bin/python3
+
+##########################################################
+# generic
+
+console_interface: "{{ ansible_local.network_devices.management }}"
+management_interface: "{{ ansible_local.network_devices.management }}"
+hosts_interface: dummy0
+
+internal_address: "{{ '192.168.16.0/20' | ipaddr('net') | ipaddr(5) | ipaddr('address') }}"
+fluentd_host: "{{ '192.168.16.0/20' | ipaddr('net') | ipaddr(5) | ipaddr('address') }}"
+
+##########################################################
+# docker
+
+docker_allow_restart: false
+
+##########################################################
+# network
+
+# network_type: netplan
+# network_ethernets:
+#   "{{ ansible_local.network_devices.management }}":
+#     addresses:
+#       - "{{ '192.168.16.0/20' | ipaddr('net') | ipaddr(node_id) | ipaddr('address') }}/20"
+#     gateway4: "{{ '192.168.16.0/20' | ipaddr('net') | ipaddr('1') | ipaddr('address') }}"
+#     mtu: 1400
+
+##########################################################
+# kolla
+
+network_interface: dummy0
+kolla_internal_vip_interface: "{{ ansible_local.network_devices.management }}"

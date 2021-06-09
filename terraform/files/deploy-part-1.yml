@@ -1,0 +1,89 @@
+---
+- name: Apply role configuration
+  hosts: designate-in-a-box.23technologies.xyz
+  connection: local
+  gather_facts: true
+
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+    configuration_git_host: github.com
+    configuration_git_port: 443
+    configuration_git_protocol: https
+    configuration_git_repository: 23technologies/designate-in-a-box.git
+    configuration_git_version: main
+
+    domain: gardener.23technologies.xyz
+    endpoint: api.designate-in-a-box.23technologies.xyz
+
+  collections:
+    - osism.commons
+
+  roles:
+    - role: configuration
+
+  tasks:
+    - name: Create designate-in-a-box.yml file
+      ansible.builtin.copy:
+        content: |
+          ---
+          hosts_additional_entries:
+            {{ endpoint }}: 192.168.16.9
+          certbot_certs:
+            - email: acme@{{ domain }}
+              domains:
+                - {{ endpoint }}
+        dest: /opt/configuration/inventory/group_vars/all/designate-in-a-box.yml
+        owner: dragon
+        group: dragon
+        mode: 0644
+
+    - name: Set auth_url
+      ansible.builtin.replace:
+        path: /opt/configuration/environments/openstack/clouds.yml
+        regexp: "^.*auth_url: (.*)$"
+        replace: "      auth_url: https://{{ endpoint }}:5000/v3"
+
+    - name: Set desginate_ns_record
+      ansible.builtin.replace:
+        path: /opt/configuration/environments/kolla/configuration.yml
+        regexp: "^.*desginate_ns_record: (.*)$"
+        replace: "desginate_ns_record: {{ domain }}"
+
+    - name: Set kolla_internal_fqdn
+      ansible.builtin.replace:
+        path: /opt/configuration/environments/configuration.yml
+        regexp: "^.*kolla_internal_fqdn: (.*)$"
+        replace: "kolla_internal_fqdn: {{ endpoint }}"
+
+- name: Apply role docker
+  hosts: designate-in-a-box.23technologies.xyz
+  connection: local
+  gather_facts: true
+
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+    docker_configure_repository: true
+    docker_configure_storage_driver: true
+    docker_storage_driver: overlay2
+    docker_user: dragon
+    docker_version: "5:20.10.6"
+
+  collections:
+    - osism.services
+
+  roles:
+    - docker
+
+- name: Apply role docker_compose
+  hosts: designate-in-a-box.23technologies.xyz
+  connection: local
+  gather_facts: true
+
+  vars:
+    docker_compose_install_type: package
+
+  collections:
+    - osism.commons
+
+  roles:
+    - role: docker_compose

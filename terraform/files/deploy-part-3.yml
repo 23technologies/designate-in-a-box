@@ -1,0 +1,35 @@
+---
+- name: Set new operator password
+  hosts: localhost
+  connection: local
+  gather_facts: true
+
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+
+    # operator
+    operator_user: dragon
+    operator_group: dragon
+    operator_authorized_keys:
+      - "{{ lookup('file', '/home/dragon/.ssh/id_rsa.pub') }}"
+
+  collections:
+    - osism.commons
+
+  roles:
+    - operator
+
+- name: Apply role manager
+  hosts: designate-in-a-box.23technologies.xyz
+  connection: local
+  gather_facts: true
+
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+    docker_registry_ansible: quay.io
+
+  collections:
+    - osism.services
+
+  roles:
+    - manager
