@@ -43,11 +43,11 @@
         regexp: "^.*auth_url: (.*)$"
         replace: "      auth_url: https://{{ endpoint }}:5000/v3"
 
-    - name: Set desginate_ns_record
+    - name: Set designate_ns_record
       ansible.builtin.replace:
         path: /opt/configuration/environments/kolla/configuration.yml
-        regexp: "^.*desginate_ns_record: (.*)$"
-        replace: "desginate_ns_record: {{ domain }}"
+        regexp: "^.*designate_ns_record: (.*)$"
+        replace: "designate_ns_record: {{ domain }}"
 
     - name: Set kolla_internal_fqdn
       ansible.builtin.replace:

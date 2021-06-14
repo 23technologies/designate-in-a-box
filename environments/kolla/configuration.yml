@@ -36,4 +36,4 @@ enable_placement: "no"
 enable_prometheus: "no"
 
 # designate
-desginate_ns_record: gardener.23technologies.xyz
+designate_ns_record: gardener.23technologies.xyz
