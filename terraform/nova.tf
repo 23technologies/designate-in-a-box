@@ -92,6 +92,7 @@ write_files:
       sudo -iu dragon sh -c 'INTERACTIVE=false osism-run custom iptables'
 
       sudo -iu dragon sh -c 'INTERACTIVE=false osism-infrastructure openstackclient'
+      sudo -iu dragon sh -c 'INTERACTIVE=false osism-run custom create-project'
     path: /root/deploy.sh
     permissions: 0700
 runcmd:
