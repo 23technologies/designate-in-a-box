@@ -87,6 +87,7 @@ write_files:
 
       sudo -iu dragon sh -c 'INTERACTIVE=false osism-kolla deploy keystone'
       sudo -iu dragon sh -c 'INTERACTIVE=false osism-kolla deploy horizon'
+      sudo -iu dragon sh -c 'INTERACTIVE=false osism-kolla deploy neutron'
       sudo -iu dragon sh -c 'INTERACTIVE=false osism-kolla deploy designate'
 
       sudo -iu dragon sh -c 'INTERACTIVE=false osism-run custom iptables'

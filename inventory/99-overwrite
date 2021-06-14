@@ -1,0 +1,18 @@
+# NOTE: the Neutron groups are all emptied here so that the Neutron deployment
+#       is as lean as possible
+
+[neutron:children]
+control
+
+[neutron-server:children]
+neutron
+
+[neutron-bgp-dragent]
+[neutron-dhcp-agent]
+[neutron-infoblox-ipam-agent]
+[neutron-l3-agent]
+[neutron-lbaas-agent]
+[neutron-metadata-agent]
+[neutron-metering-agent]
+[neutron-ovn-metadata-agent]
+[neutron-vpnaas-agent]
