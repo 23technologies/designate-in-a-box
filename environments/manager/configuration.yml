@@ -3,7 +3,7 @@
 # versions
 
 manager_version: latest
-openstack_version: victoria
+openstack_version: wallaby
 
 ##########################
 # manager
