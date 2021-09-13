@@ -35,5 +35,9 @@ enable_openvswitch: "no"
 enable_placement: "no"
 enable_prometheus: "no"
 
+# horizon
+acme_client_servers:
+  - server certbot 192.168.16.5:80
+
 # designate
 designate_ns_record: gardener.23technologies.xyz
